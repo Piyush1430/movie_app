@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       title: "Flicked",
       initialRoute: "home",
       routes: {
-        "home": (context) => const HomeScreen(),
+        "home": (context) =>  HomeScreen(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,

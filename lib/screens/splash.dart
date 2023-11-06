@@ -4,9 +4,12 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:get_it/get_it.dart";
 //Screen
-import 'package:movie_app/models/app_config.dart';
 import "package:movie_app/services/http_service.dart";
 import "package:movie_app/services/movie_service.dart";
+
+
+//Models
+import 'package:movie_app/models/app_config.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key, required this.onInitizational});
@@ -19,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2)).then(
+    Future.delayed(const Duration(seconds: 1)).then(
       (_) => _setup(context).then(
         (_) => widget.onInitizational(),
       ),
