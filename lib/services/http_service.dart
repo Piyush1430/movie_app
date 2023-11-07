@@ -1,40 +1,36 @@
+import '../models/app_config.dart';
+
 //Packages
-// ignore_for_file: avoid_print
-
-import "package:dio/dio.dart";
-import "package:get_it/get_it.dart";
-
-//models
-import "package:movie_app/models/app_config.dart";
+import 'package:dio/dio.dart';
+import 'package:get_it/get_it.dart';
 
 class HTTPService {
   final Dio dio = Dio();
   final GetIt getIt = GetIt.instance;
 
-  String? baseUrl;
-  String? apiKey;
+  String? _base_url;
+  String? _api_key;
 
   HTTPService() {
     AppConfig config = getIt.get<AppConfig>();
-    baseUrl = config.BASE_API_URL;
-    apiKey = config.API_KEY;
+    _base_url = config.BASE_API_URL;
+    _api_key = config.API_KEY;
   }
 
-  Future<Response?> get(String path,
-      {required Map<String, dynamic>? otherQuery}) async {
+  Future<Response?> get(String path, {Map<String, dynamic>? query}) async {
     try {
-      String url = "$baseUrl$path";
-      Map<String, dynamic> query = {
-        "api_key": apiKey,
-        "language": "en-Us",
+      String url = '$_base_url$path';
+      Map<String, dynamic> query0 = {
+        'api_key': _api_key,
+        'language': 'en-US',
       };
-      if (otherQuery != null) {
-        query.addAll(otherQuery);
+      if (query != null) {
+        query0.addAll(query);
       }
-      return await dio.get(url,queryParameters: query);
+      return await dio.get(url, queryParameters: query0);
     } on DioException catch (e) {
-      print("Uable to load request");
-      print("DioError:$e");
+      print('Unable to perform get request.');
+      print('DioError:$e');
     }
     return null;
   }
