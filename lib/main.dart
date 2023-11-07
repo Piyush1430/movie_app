@@ -11,7 +11,7 @@ void main() {
     SplashPage(
       key: UniqueKey(),
       onInitializationComplete: () => runApp(
-        ProviderScope(
+        const ProviderScope(
           child: MyApp(),
         ),
       ),
@@ -20,13 +20,15 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flickd',
       initialRoute: 'home',
       routes: {
-        'home': (BuildContext _context) => MainPage(),
+        'home': (BuildContext context) => MainPage(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
