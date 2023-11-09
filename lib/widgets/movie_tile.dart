@@ -1,16 +1,20 @@
+import 'package:flutter/material.dart';
+
 //Packages
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 //Models
 import '../models/movie.dart';
 
 class MovieTile extends StatelessWidget {
+  final GetIt _getIt = GetIt.instance;
 
   final double? height;
   final double? width;
   final Movie? movie;
 
-  const MovieTile({super.key, this.movie, this.height, this.width});
+  MovieTile({super.key, this.movie, this.height, this.width});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +32,7 @@ class MovieTile extends StatelessWidget {
   Widget _movieInfoWidget() {
     return SizedBox(
       height: height,
-      width: width! * 0.70,
+      width: width! * 0.65,
       child: Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -40,7 +44,7 @@ class MovieTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                width: width! * 0.50,
+                width: width! * 0.45,
                 child: Text(
                   movie!.name!,
                   overflow: TextOverflow.ellipsis,
@@ -59,7 +63,6 @@ class MovieTile extends StatelessWidget {
               ),
             ],
           ),
-          
           Container(
             padding: EdgeInsets.fromLTRB(0, height! * 0.02, 0, 0),
             child: Text(
@@ -78,17 +81,16 @@ class MovieTile extends StatelessWidget {
           ),
         ],
       ),
-
     );
   }
 
-  Widget _moviePosterWidget(String imageUrl) {
+  Widget _moviePosterWidget(String _imageUrl) {
     return Container(
       height: height,
       width: width! * 0.35,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: NetworkImage(imageUrl),
+          image: NetworkImage(_imageUrl),
         ),
       ),
     );

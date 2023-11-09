@@ -24,21 +24,21 @@ class Movie {
       this.rating,
       this.releaseDate});
 
-  factory Movie.fromJson(Map<String, dynamic> json) {
+  factory Movie.fromJson(Map<String, dynamic> _json) {
     return Movie(
-      name: json['title'],
-      language: json['original_language'],
-      isAdult: json['adult'],
-      description: json['overview'],
-      posterPath: json['poster_path'],
-      backdropPath: json['backdrop_path'],
-      rating: json['vote_average'],
-      releaseDate: json['release_date'],
+      name: _json['title'],
+      language: _json['original_language'],
+      isAdult: _json['adult'],
+      description: _json['overview'],
+      posterPath: _json['poster_path'],
+      backdropPath: _json['backdrop_path'],
+      rating: _json['vote_average'],
+      releaseDate: _json['release_date'],
     );
   }
 
   String posterURL() {
-    final AppConfig appConfig = GetIt.instance.get<AppConfig>();
-    return '${appConfig.BASE_IMAGE_API_URL}$posterPath';
+    final AppConfig _appConfig = GetIt.instance.get<AppConfig>();
+    return '${_appConfig.BASE_IMAGE_API_URL}${this.posterPath}';
   }
 }

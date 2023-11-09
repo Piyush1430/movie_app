@@ -18,46 +18,46 @@ class MovieService {
   }
 
   Future<List<Movie>?> getPopularMovies({int? page}) async {
-    Response? response = await _http.get('/movie/popular', query: {
+    Response? _response = await _http.get('/movie/popular', query: {
       'page': page,
     });
-    if (response!.statusCode == 200) {
-      Map data = response.data;
-      List<Movie>? movies = data['results'].map<Movie>((movieData) {
-        return Movie.fromJson(movieData);
+    if (_response!.statusCode == 200) {
+      Map _data = _response.data;
+      List<Movie>? _movies = _data['results'].map<Movie>((_movieData) {
+        return Movie.fromJson(_movieData);
       }).toList();
-      return movies;
+      return _movies;
     } else {
       throw Exception('Couldn\'t load popular movies.');
     }
   }
 
   Future<List<Movie>?> getUpcomingMovies({int? page}) async {
-    Response? response = await _http.get('/movie/upcoming', query: {
+    Response? _response = await _http.get('/movie/upcoming', query: {
       'page': page,
     });
-    if (response!.statusCode == 200) {
-      Map data = response.data;
-      List<Movie>? movies = data['results'].map<Movie>((movieData) {
-        return Movie.fromJson(movieData);
+    if (_response!.statusCode == 200) {
+      Map _data = _response.data;
+      List<Movie>? _movies = _data['results'].map<Movie>((_movieData) {
+        return Movie.fromJson(_movieData);
       }).toList();
-      return movies;
+      return _movies;
     } else {
       throw Exception('Couldn\'t load upcoming movies.');
     }
   }
 
-  Future<List<Movie>?> searchMovies(String? seachTerm, {int? page}) async {
-    Response? response = await _http.get('/search/movie', query: {
-      'query': seachTerm,
+  Future<List<Movie>?> searchMovies(String? _seachTerm, {int? page}) async {
+    Response? _response = await _http.get('/search/movie', query: {
+      'query': _seachTerm,
       'page': page,
     });
-    if (response!.statusCode == 200) {
-      Map data = response.data;
-      List<Movie>? movies = data['results'].map<Movie>((movieData) {
-        return Movie.fromJson(movieData);
+    if (_response!.statusCode == 200) {
+      Map _data = _response.data;
+      List<Movie>? _movies = _data['results'].map<Movie>((_movieData) {
+        return Movie.fromJson(_movieData);
       }).toList();
-      return movies;
+      return _movies;
     } else {
       throw Exception('Couldn\'t perform movies search.');
     }

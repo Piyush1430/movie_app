@@ -1,15 +1,13 @@
 //Package
-// ignore_for_file: avoid_print
-
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
+import 'package:movie_app/models/search_category.dart';
 
 //Models
-import 'package:movie_app/models/main_page_data.dart';
-import 'package:movie_app/models/movie.dart';
-import 'package:movie_app/models/search_category.dart';
+import '../models/main_page_data.dart';
+import '../models/movie.dart';
 
 //Services
 import '../services/movie_service.dart';
@@ -24,43 +22,43 @@ class MainPageDataController extends StateNotifier<MainPageData> {
 
   Future<void> getMovies() async {
     try {
-      List<Movie>? movies = [];
+      List<Movie>? _movies = [];
 
       if (state.searchText!.isEmpty) {
         if (state.searchCategory == SearchCategory.popular) {
-          movies = await (_movieService.getPopularMovies(page: state.page));
+          _movies = await (_movieService.getPopularMovies(page: state.page));
         } else if (state.searchCategory == SearchCategory.upcoming) {
-          movies = await (_movieService.getUpcomingMovies(page: state.page));
+          _movies = await (_movieService.getUpcomingMovies(page: state.page));
         } else if (state.searchCategory == SearchCategory.none) {
-          movies = [];
+          _movies = [];
         }
       } else {
-        movies = await (_movieService.searchMovies(state.searchText));
+        _movies = await (_movieService.searchMovies(state.searchText));
       }
       state = state.copyWith(
-          movies: [...state.movies!, ...movies!], page: state.page! + 1);
+          movies: [...state.movies!, ..._movies!], page: state.page! + 1);
     } catch (e) {
       print(e);
     }
   }
 
-  void updateSearchCategory(String? category) {
+  void updateSearchCategory(String? _category) {
     try {
       state = state.copyWith(
-          movies: [], page: 1, searchCategory: category, searchText: '');
+          movies: [], page: 1, searchCategory: _category, searchText: '');
       getMovies();
     } catch (e) {
       print(e);
     }
   }
 
-  void updateTextSearch(String searchText) {
+  void updateTextSearch(String _searchText) {
     try {
       state = state.copyWith(
           movies: [],
           page: 1,
           searchCategory: SearchCategory.none,
-          searchText: searchText);
+          searchText: _searchText);
       getMovies();
     } catch (e) {
       print(e);

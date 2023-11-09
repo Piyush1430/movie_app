@@ -30,14 +30,14 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 1)).then(
+    Future.delayed(Duration(seconds: 1)).then(
       (_) => _setup(context).then(
         (_) => widget.onInitializationComplete(),
       ),
     );
   }
 
-  Future<void> _setup(BuildContext context) async {
+  Future<void> _setup(BuildContext _context) async {
     final getIt = GetIt.instance;
 
     final configFile = await rootBundle.loadString('assets/config/main.json');
@@ -69,7 +69,7 @@ class _SplashPageState extends State<SplashPage> {
         child: Container(
           height: 200,
           width: 200,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             image: DecorationImage(
               fit: BoxFit.contain,
               image: AssetImage('assets/images/logo.png'),

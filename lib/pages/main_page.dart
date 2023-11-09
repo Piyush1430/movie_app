@@ -1,11 +1,11 @@
-// ignore_for_file: must_be_immutable, prefer_typing_uninitialized_variables
-
 import 'dart:ui';
 
 //Packages
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:movie_app/models/main_page_data.dart';
+import 'package:movie_app/widgets/movie_list.dart';
 
 //Widgets
 import '../widgets/movie_tile.dart';
@@ -13,10 +13,9 @@ import '../widgets/movie_tile.dart';
 //Models
 import '../models/search_category.dart';
 import '../models/movie.dart';
-import 'package:movie_app/models/main_page_data.dart';
 
 //Controllers
-import 'package:movie_app/controller/main_page_data_controller.dart';
+import '../controllers/main_page_data_controller.dart';
 
 final mainPageDataControllerProvider =
     StateNotifierProvider<MainPageDataController, MainPageData>((ref) {
@@ -24,12 +23,12 @@ final mainPageDataControllerProvider =
 });
 
 final selectedMoviePosterURLProvider = StateProvider<String?>((ref) {
-  final movies = ref.watch(mainPageDataControllerProvider).movies!;
-  return movies.isNotEmpty ? movies[0].posterURL() : null;
+  final _movies = ref.watch(mainPageDataControllerProvider).movies!;
+  return _movies.length != 0 ? _movies[0].posterURL() : null;
 });
 
 class MainPage extends ConsumerWidget {
-   double? _deviceHeight;
+  double? _deviceHeight;
   double? _deviceWidth;
 
   late var _selectedMoviePosterURL;
@@ -39,8 +38,6 @@ class MainPage extends ConsumerWidget {
 
   TextEditingController? _searchTextFieldController;
 
-  MainPage({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     _deviceHeight = MediaQuery.of(context).size.height;
@@ -49,7 +46,8 @@ class MainPage extends ConsumerWidget {
     _mainPageDataController =
         ref.watch(mainPageDataControllerProvider.notifier);
     _mainPageData = ref.watch(mainPageDataControllerProvider);
-    _selectedMoviePosterURL = ref.watch(selectedMoviePosterURLProvider);
+    _selectedMoviePosterURL =
+        ref.watch(selectedMoviePosterURLProvider);
 
     _searchTextFieldController = TextEditingController();
 
@@ -117,9 +115,14 @@ class MainPage extends ConsumerWidget {
         children: [
           _topBarWidget(),
           Container(
-            height: _deviceHeight! * 0.83,
+            height: _deviceHeight! * 0.85,
             padding: EdgeInsets.symmetric(vertical: _deviceHeight! * 0.01),
-            child: _moviesListViewWidget(),
+            child: MovieList(
+                mainPageData: _mainPageData,
+                mainPageDataController: _mainPageDataController,
+                selectedMoviePosterURL: _selectedMoviePosterURL,
+                deviceHeight: _deviceHeight,
+                deviceWidth: _deviceWidth),
           )
         ],
       ),
@@ -146,20 +149,20 @@ class MainPage extends ConsumerWidget {
   }
 
   Widget _searchFieldWidget() {
-    const border = InputBorder.none;
+    final _border = InputBorder.none;
     return SizedBox(
       width: _deviceWidth! * 0.50,
       height: _deviceHeight! * 0.05,
       child: TextField(
         controller: _searchTextFieldController,
-        onSubmitted: (input) =>
-            _mainPageDataController.updateTextSearch(input),
-        style:const  TextStyle(color: Colors.white),
-        decoration:const  InputDecoration(
-            focusedBorder: border,
-            border: border,
-            prefixIcon: Icon(Icons.search, color: Colors.white24),
-            hintStyle: TextStyle(color: Colors.white54),
+        onSubmitted: (_input) =>
+            _mainPageDataController.updateTextSearch(_input),
+        style: const TextStyle(color: Colors.white),
+        decoration: InputDecoration(
+            focusedBorder: _border,
+            border: _border,
+            prefixIcon: const Icon(Icons.search, color: Colors.white24),
+            hintStyle: const TextStyle(color: Colors.white54),
             filled: false,
             fillColor: Colors.white24,
             hintText: 'Search....'),
@@ -179,8 +182,8 @@ class MainPage extends ConsumerWidget {
         height: 1,
         color: Colors.white24,
       ),
-      onChanged: (dynamic value) => value.toString().isNotEmpty
-          ? _mainPageDataController.updateSearchCategory(value)
+      onChanged: (dynamic _value) => _value.toString().isNotEmpty
+          ? _mainPageDataController.updateSearchCategory(_value)
           : null,
       items: [
         DropdownMenuItem(
@@ -206,51 +209,5 @@ class MainPage extends ConsumerWidget {
         ),
       ],
     );
-  }
-
-  Widget _moviesListViewWidget() {
-    final List<Movie> movies = _mainPageData.movies!;
-
-    if (movies.isNotEmpty) {
-      return NotificationListener(
-        onNotification: (dynamic onScrollNotification) {
-          if (onScrollNotification is ScrollEndNotification) {
-            final before = onScrollNotification.metrics.extentBefore;
-            final max = onScrollNotification.metrics.maxScrollExtent;
-            if (before == max) {
-              _mainPageDataController.getMovies();
-              return true;
-            }
-            return false;
-          }
-          return false;
-        },
-        child: ListView.builder(
-          itemCount: movies.length,
-          itemBuilder: (BuildContext context, int count) {
-            return Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: _deviceHeight! * 0.01, horizontal: 0),
-              child: GestureDetector(
-                onTap: () {
-                  _selectedMoviePosterURL.state = movies[count].posterURL();
-                },
-                child: MovieTile(
-                  movie: movies[count],
-                  height: _deviceHeight! * 0.27,
-                  width: _deviceWidth! * 0.85,
-                ),
-              ),
-            );
-          },
-        ),
-      );
-    } else {
-      return const Center(
-        child: CircularProgressIndicator(
-          backgroundColor: Colors.white,
-        ),
-      );
-    }
   }
 }
