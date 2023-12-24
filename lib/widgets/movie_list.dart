@@ -5,6 +5,7 @@ import "package:movie_app/models/main_page_data.dart";
 import "package:movie_app/models/movie.dart";
 import "package:movie_app/widgets/movie_tile.dart";
 
+// ignore: must_be_immutable
 class MovieList extends ConsumerStatefulWidget {
   MovieList(
       {Key? key,
@@ -17,8 +18,8 @@ class MovieList extends ConsumerStatefulWidget {
   final MainPageData mainPageData;
   final MainPageDataController mainPageDataController;
   var selectedMoviePosterURL;
-  final deviceHeight;
-  final deviceWidth;
+  final double deviceHeight;
+  final double deviceWidth;
 
   @override
   ConsumerState<MovieList> createState() => _MovieListState();
@@ -33,12 +34,12 @@ class _MovieListState extends ConsumerState<MovieList> {
   Widget _moviesListViewWidget() {
     final List<Movie> movies = widget.mainPageData.movies!;
 
-    if (movies.length != 0) {
+    if (movies.isNotEmpty) {
       return NotificationListener(
-        onNotification: (dynamic _onScrollNotification) {
-          if (_onScrollNotification is ScrollEndNotification) {
-            final before = _onScrollNotification.metrics.extentBefore;
-            final max = _onScrollNotification.metrics.maxScrollExtent;
+        onNotification: (dynamic onScrollNotification) {
+          if (onScrollNotification is ScrollEndNotification) {
+            final before = onScrollNotification.metrics.extentBefore;
+            final max = onScrollNotification.metrics.maxScrollExtent;
             if (before == max) {
               widget.mainPageDataController.getMovies();
               return true;
@@ -49,20 +50,20 @@ class _MovieListState extends ConsumerState<MovieList> {
         },
         child: ListView.builder(
           itemCount: movies.length,
-          itemBuilder: (BuildContext _context, int _count) {
+          itemBuilder: (BuildContext context, int count) {
             return Padding(
               padding: EdgeInsets.symmetric(
-                  vertical: widget.deviceHeight! * 0.01, horizontal: 0),
+                  vertical: widget.deviceHeight * 0.01, horizontal: 0),
               child: GestureDetector(
                 onTap: () {
-                  setState() {
-                    widget.selectedMoviePosterURL = movies[_count].posterURL();
-                  }
+                  setState(() {
+                    widget.selectedMoviePosterURL = movies[count].posterURL();
+                  });
                 },
                 child: MovieTile(
-                  movie: movies[_count],
-                  height: widget.deviceHeight! * 0.30,
-                  width: widget.deviceWidth! * 0.84,
+                  movie: movies[count],
+                  height: widget.deviceHeight * 0.30,
+                  width: widget.deviceWidth * 0.84,
                 ),
               ),
             );

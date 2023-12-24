@@ -1,20 +1,17 @@
-import 'package:flutter/material.dart';
-
 //Packages
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+
 
 //Models
 import '../models/movie.dart';
 
 class MovieTile extends StatelessWidget {
-  final GetIt _getIt = GetIt.instance;
 
   final double? height;
   final double? width;
   final Movie? movie;
 
-  MovieTile({super.key, this.movie, this.height, this.width});
+  const MovieTile({super.key, this.movie, this.height, this.width});
 
   @override
   Widget build(BuildContext context) {
@@ -84,13 +81,13 @@ class MovieTile extends StatelessWidget {
     );
   }
 
-  Widget _moviePosterWidget(String _imageUrl) {
+  Widget _moviePosterWidget(String imageUrl) {
     return Container(
       height: height,
       width: width! * 0.35,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: NetworkImage(_imageUrl),
+          image: NetworkImage(imageUrl),
         ),
       ),
     );

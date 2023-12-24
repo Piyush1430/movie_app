@@ -7,12 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_app/models/main_page_data.dart';
 import 'package:movie_app/widgets/movie_list.dart';
 
-//Widgets
-import '../widgets/movie_tile.dart';
-
 //Models
 import '../models/search_category.dart';
-import '../models/movie.dart';
 
 //Controllers
 import '../controllers/main_page_data_controller.dart';
@@ -23,11 +19,20 @@ final mainPageDataControllerProvider =
 });
 
 final selectedMoviePosterURLProvider = StateProvider<String?>((ref) {
-  final _movies = ref.watch(mainPageDataControllerProvider).movies!;
-  return _movies.length != 0 ? _movies[0].posterURL() : null;
+  final movies = ref.watch(mainPageDataControllerProvider).movies!;
+  return movies.isNotEmpty ? movies[0].posterURL() : null;
 });
 
-class MainPage extends ConsumerWidget {
+class MainPage extends ConsumerStatefulWidget {
+  const MainPage({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() {
+    return _MainPageState();
+  }
+}
+
+class _MainPageState extends ConsumerState {
   double? _deviceHeight;
   double? _deviceWidth;
 
@@ -39,15 +44,14 @@ class MainPage extends ConsumerWidget {
   TextEditingController? _searchTextFieldController;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context,) {
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
 
     _mainPageDataController =
         ref.watch(mainPageDataControllerProvider.notifier);
     _mainPageData = ref.watch(mainPageDataControllerProvider);
-    _selectedMoviePosterURL =
-        ref.watch(selectedMoviePosterURLProvider);
+    _selectedMoviePosterURL = ref.watch(selectedMoviePosterURLProvider);
 
     _searchTextFieldController = TextEditingController();
 
@@ -121,8 +125,8 @@ class MainPage extends ConsumerWidget {
                 mainPageData: _mainPageData,
                 mainPageDataController: _mainPageDataController,
                 selectedMoviePosterURL: _selectedMoviePosterURL,
-                deviceHeight: _deviceHeight,
-                deviceWidth: _deviceWidth),
+                deviceHeight: _deviceHeight!,
+                deviceWidth: _deviceWidth!),
           )
         ],
       ),
@@ -149,20 +153,19 @@ class MainPage extends ConsumerWidget {
   }
 
   Widget _searchFieldWidget() {
-    final _border = InputBorder.none;
+    const border = InputBorder.none;
     return SizedBox(
       width: _deviceWidth! * 0.50,
       height: _deviceHeight! * 0.05,
       child: TextField(
         controller: _searchTextFieldController,
-        onSubmitted: (_input) =>
-            _mainPageDataController.updateTextSearch(_input),
+        onSubmitted: (input) => _mainPageDataController.updateTextSearch(input),
         style: const TextStyle(color: Colors.white),
-        decoration: InputDecoration(
-            focusedBorder: _border,
-            border: _border,
-            prefixIcon: const Icon(Icons.search, color: Colors.white24),
-            hintStyle: const TextStyle(color: Colors.white54),
+        decoration: const InputDecoration(
+            focusedBorder: border,
+            border: border,
+            prefixIcon: Icon(Icons.search, color: Colors.white24),
+            hintStyle: TextStyle(color: Colors.white54),
             filled: false,
             fillColor: Colors.white24,
             hintText: 'Search....'),
